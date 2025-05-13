@@ -1,15 +1,25 @@
 import { DeviceList } from "@/components/devices/DeviceList";
+import GoogleMapComponent from "@/components/map/GoogleMapComponent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GOOGLE_MAPS_API_KEY } from "@/config/maps";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDevices } from "@/hooks/useDevices";
 import { Device } from "@/types/device";
-import { Activity, AlertCircle, MapPin, PlugZap } from "lucide-react";
+import { Activity, AlertCircle, PlugZap } from "lucide-react";
 import { useState } from "react";
 
 const Dashboard = () => {
     const { devices, loading, error } = useDevices();
     const [hoveredDevice, setHoveredDevice] = useState<Device | null>(null);
     const { user } = useAuth();
+
+    // Filter devices that have location data and should be shown on map
+    const visibleDevices = devices.filter(
+        (device) =>
+            device.settings.showOnMap &&
+            device.location?.coordinates?.latitude &&
+            device.location?.coordinates?.longitude
+    );
 
     // Count devices by status
     const onlineCount = devices.filter((d) => d.status === "online").length;
@@ -118,73 +128,26 @@ const Dashboard = () => {
                 <div className="h-[600px]">
                     <h2 className="text-xl font-semibold mb-4">Device Map</h2>
                     <Card className="h-full">
-                        <CardContent className="p-0 h-full flex items-center justify-center bg-muted/40 relative overflow-hidden">
-                            <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                                <MapPin className="h-64 w-64" />
-                            </div>
-                            <div className="text-center p-8">
-                                <h3 className="text-lg font-medium">
-                                    Google Maps Integration
-                                </h3>
-                                <p className="text-sm text-muted-foreground mt-2">
-                                    The map will show device locations from your
-                                    account
-                                </p>
-                                {hoveredDevice && (
-                                    <div className="mt-8 border rounded-lg p-4 bg-card max-w-xs mx-auto text-left">
-                                        <h4 className="font-semibold">
-                                            {hoveredDevice.boot.vendor}{" "}
-                                            {hoveredDevice.boot.model}
-                                        </h4>
-                                        <div className="mt-2 text-sm">
-                                            <p>
-                                                <span className="text-muted-foreground">
-                                                    Status:
-                                                </span>{" "}
-                                                {hoveredDevice.status ||
-                                                    "Unknown"}
-                                            </p>
-                                            <p>
-                                                <span className="text-muted-foreground">
-                                                    Location:
-                                                </span>{" "}
-                                                {hoveredDevice.location.city},{" "}
-                                                {hoveredDevice.location.country}
-                                            </p>
-                                            <p>
-                                                <span className="text-muted-foreground">
-                                                    Coordinates:
-                                                </span>{" "}
-                                                {hoveredDevice.location.coordinates.latitude.toFixed(
-                                                    4
-                                                )}
-                                                ,{" "}
-                                                {hoveredDevice.location.coordinates.longitude.toFixed(
-                                                    4
-                                                )}
-                                            </p>
-                                            <p>
-                                                <span className="text-muted-foreground">
-                                                    Operator:
-                                                </span>{" "}
-                                                {
-                                                    hoveredDevice.ownership
-                                                        .operator
-                                                }
-                                            </p>
-                                            <p>
-                                                <span className="text-muted-foreground">
-                                                    Public Access:
-                                                </span>{" "}
-                                                {hoveredDevice.settings
-                                                    .publicAccess
-                                                    ? "Yes"
-                                                    : "No"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                        <CardContent className="p-0 h-full">
+                            {GOOGLE_MAPS_API_KEY ? (
+                                <GoogleMapComponent
+                                    devices={visibleDevices}
+                                    selectedDevice={hoveredDevice}
+                                    apiKey={GOOGLE_MAPS_API_KEY}
+                                />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full p-8 bg-muted/40">
+                                    <AlertCircle className="h-12 w-12 text-yellow-500 mb-4" />
+                                    <h3 className="text-lg font-medium mb-2">
+                                        Google Maps API Key Missing
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground text-center">
+                                        To display the map, you need to provide
+                                        a Google Maps API key in the environment
+                                        variable VITE_GOOGLE_MAPS_API_KEY.
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

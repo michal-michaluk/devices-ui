@@ -18,8 +18,8 @@ const MOCK_DEVICES: Device[] = [
             state: null,
             country: "POL",
             coordinates: {
-                longitude: 51.09836221719513,
-                latitude: 16.931752852309156,
+                latitude: 51.09836221719513,
+                longitude: 16.931752852309156,
             },
         },
         openingHours: {
@@ -60,15 +60,15 @@ const MOCK_DEVICES: Device[] = [
             provider: "private-devices",
         },
         location: {
-            street: "Tech Boulevard",
-            houseNumber: "456",
-            city: "Seattle",
-            postalCode: "98101",
-            state: "WA",
-            country: "USA",
+            street: "Świdnicka",
+            houseNumber: "28",
+            city: "Wrocław",
+            postalCode: "50-067",
+            state: null,
+            country: "POL",
             coordinates: {
-                longitude: 47.6062,
-                latitude: -122.3321,
+                latitude: 51.10789,
+                longitude: 17.02649,
             },
         },
         openingHours: {
@@ -109,15 +109,15 @@ const MOCK_DEVICES: Device[] = [
             provider: "green-energy",
         },
         location: {
-            street: "Green Street",
-            houseNumber: "789",
-            city: "Austin",
-            postalCode: "78701",
-            state: "TX",
-            country: "USA",
+            street: "Legnicka",
+            houseNumber: "58",
+            city: "Wrocław",
+            postalCode: "54-204",
+            state: null,
+            country: "POL",
             coordinates: {
-                longitude: 30.2672,
-                latitude: -97.7431,
+                latitude: 51.11729,
+                longitude: 16.98654,
             },
         },
         openingHours: {
@@ -128,7 +128,7 @@ const MOCK_DEVICES: Device[] = [
             remoteControl: false,
             billing: true,
             reimbursement: false,
-            showOnMap: false,
+            showOnMap: true,
             publicAccess: false,
         },
         violations: {
